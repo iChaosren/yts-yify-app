@@ -1,24 +1,25 @@
-import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import React, { Component, PureComponent } from 'react';
+import { View, Text, TouchableOpacity, Platform, Dimensions } from 'react-native';
 import { Card } from 'react-native-elements';
 
-class MovieListItem extends Component {
+class MovieListItem extends PureComponent {
+
     render() {
         const { 
             title,
             year,
             rating,
             large_cover_image
-        } = this.props.movie;
-
+        } = this.props;
+        
         return (
             <TouchableOpacity>
                 <Card                 
                     imageProps={{ resizeMode: 'cover', resizeMethod: 'scale' }}
-                    imageStyle={{...this.props.imageStyle}}
-                    imageWrapperStyle={{...this.props.imageWrapperStyle}}
+                    imageStyle={{...styles.movieImageStyle}}
+                    imageWrapperStyle={{...styles.movieImageWrapperStyle}}
                     image={{uri: large_cover_image}}
-                    containerStyle={{...styles.cardContainer, ...this.props.style}} 
+                    containerStyle={{...styles.cardContainer, ...styles.movieItem}} 
                     wrapperStyle={styles.cardWrapper}
                 >
                     <Text style={styles.text}>{title}</Text>
@@ -56,7 +57,21 @@ const styles = {
         color: 'rgba(106, 192, 69, 0.8)',
         fontFamily: 'Open Sans',
         textAlign: 'center',                
-    }
+    },    
+    movieItem: {
+        width: (Dimensions.get('window').width / 2) - 16,
+        margin: 4,
+        marginTop: 8,
+        marginBottom: 6,
+        borderRadius: 4
+    },
+    movieImageStyle: {
+        width: (Dimensions.get('window').width / 2) - 16,
+        height: (Dimensions.get('window').height / 2) - 76,
+    },
+    movieImageWrapperStyle: {
+
+    },
 };
 
 export default MovieListItem;

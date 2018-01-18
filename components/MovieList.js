@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Platform, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Platform, ActivityIndicator, Dimensions, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
+import { AdMobBanner } from 'expo';
 
 import { FontAwesomeLight } from './FontAwesome5';
 
@@ -14,12 +15,6 @@ class MovieList extends Component {
     componentWillMount() {
         //console.log(this.props)
         this.props.fetchMovieList({});
-    }
-
-    isCloseToBottom({ layoutMeasurement, contentOffset, contentSize }) {
-        const paddingToBottom = 20;
-        return layoutMeasurement.height + contentOffset.y >=
-            contentSize.height - paddingToBottom;
     }
 
     renderModal() {
@@ -44,36 +39,13 @@ class MovieList extends Component {
             );
     }
 
-    renderMovieList() {
-        const { movieList } = this.props;
-
-        if (movieList.length > 0) {
-            var moviesRendered = [];
-            for (var i = 0; i < movieList.length; i++) {
-                moviesRendered.push(
-                    <MovieListItem 
-                        key={movieList[i].id} 
-                        movie={movieList[i]} 
-                        style={styles.movieItem} 
-                        imageStyle={styles.movieImageStyle}
-                        imageWrapperStyle={styles.movieImageWrapperStyle} 
-                        />
-                    )
-            }
-            return moviesRendered;
-        }
-        else {
-            if (!this.props.loading)
-                return (
-                    <View style={styles.emptyContainer}>
-                        <FontAwesomeLight name="bomb" size={18} color='rgba(200,35,51,0.8)' />
-                        <Text style={styles.emptyText}> Nothing to show...</Text>
-                    </View>
-                );
-        }
+    onSearchChange(text) {
+        this.props.fetchMovieList({ page: 1, query_term: text });
     }
 
     render() {
+
+        console.log(this.state)
         return (
             <View style={{ flex: 1 }}>
                 <SearchBar
@@ -83,20 +55,54 @@ class MovieList extends Component {
                     placeholderTextColor='rgba(106, 192, 69, 0.45)'
                     showLoadingIcon={this.props.loading && this.props.query_term !== ''}
                     icon={{ color: 'rgba(106, 192, 69, 0.45)' }}
+                    onChangeText={this.onSearchChange.bind(this)}
+                    value={(this.props.query_term || '')}
                     round
                 />
-                <ScrollView
-                    onScroll={({ nativeEvent }) => {
-                        if (this.isCloseToBottom(nativeEvent)) {
-                            if (!this.props.loading)
-                                this.props.fetchMovieList({ page: this.props.page + 1 });
-                        }
-                    }}
-                    scrollEventThrottle={400}
+                <FlatList
                     contentContainerStyle={styles.scrollViewContent}
-                >
-                    {this.renderMovieList()}
-                </ScrollView>
+                    keyExtractor={(item, index) => item.id}
+                    numColumns={2}
+                    data={this.props.movieList}
+                    extraData={this.state}
+                    renderItem={({ item }) => <MovieListItem
+                        //key={item.id}
+                        //movie={item}
+                        id={item.id}
+                        title={item.title}
+                        year={item.year}
+                        rating={item.rating}
+                        large_cover_image={item.large_cover_image}
+                    />}
+                    onEndReached={() => {
+                        if (!this.props.loading && this.props.movieList.length < this.props.movie_count) {
+                            this.props.loading = true;
+                            this.props.fetchMovieList({ page: this.props.page + 1, query_term: this.props.query_term });
+                        }
+
+                        console.log('Triggered...')
+                    }}
+                    onEndReachedThreshold={0.5}
+                    ListEmptyComponent={() => {
+                        if (!this.props.loading)
+                            return (
+                                <View style={styles.emptyContainer}>
+                                    <FontAwesomeLight name="bomb" size={18} color='rgba(200,35,51,0.8)' />
+                                    <Text style={styles.emptyText}> Nothing to show...</Text>
+                                </View>
+                            );
+                        else
+                            return <View />
+                    }}
+                    ListFooterComponent={
+                        <View style={styles.adBanner}>
+                            <AdMobBanner
+                                bannerSize="smartBannerLandscape"
+                                adUnitID={Platform.select({ ios: 'ca-app-pub-3964494109532932/9046758779', android: 'ca-app-pub-3964494109532932/5421185019' })}
+                                didFailToReceiveAdWithError={this.bannerError} />
+                        </View>
+                    }
+                />
                 {this.renderModal()}
             </View>
         );
@@ -125,25 +131,10 @@ const styles = {
     scrollViewContent: {
         margin: 0,
         padding: 4,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
+        //flexDirection: 'row',
+        //flexWrap: 'wrap',
         alignItems: 'flex-start',
         justifyContent: 'flex-start'
-    },
-    movieItem: {
-        width: (Dimensions.get('window').width / 2) - 16,
-        height: (Dimensions.get('window').height / 2),
-        margin: 4,
-        marginTop: 8,
-        marginBottom: 6,
-        borderRadius: 4
-    },
-    movieImageStyle: {
-        width: (Dimensions.get('window').width / 2) - 16,
-        height: (Dimensions.get('window').height / 2) - 76,
-    },
-    movieImageWrapperStyle: {
-
     },
     loadingModalContainer: {
         position: 'absolute',
@@ -180,25 +171,30 @@ const styles = {
     },
     emptyContainer: {
         alignItems: 'center',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'center',
+        width: Dimensions.get('window').width,
+        padding: 20
     },
     emptyText: {
         fontFamily: 'Open Sans',
         color: 'rgba(200,35,51,0.8)'
+    },
+    adBanner: {
+        width: Dimensions.get('window').width
     }
 };
 
 const mapStateToProps = (state) => {
-    const { movieList, query_term, page, loading, error } = state.moviesReducer;
-
-    console.log(state)
+    const { movieList, query_term, page, loading, error, movie_count } = state.moviesReducer;
 
     return {
         movieList,
         query_term,
         page,
         loading,
-        error
+        error,
+        movie_count
     };
 }
 

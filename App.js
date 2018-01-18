@@ -26,6 +26,18 @@ export default class App extends React.Component {
     };
     firebase.initializeApp(config);
     */
+
+    //AdMob Android
+    //APP
+    //ca-app-pub-3964494109532932~2052785644
+    //BANNER
+    //ca-app-pub-3964494109532932/5421185019
+
+    //AdMob iOS
+    //APP
+    //ca-app-pub-3964494109532932~1450150419
+    //BANNER
+    //ca-app-pub-3964494109532932/9046758779
   }
 
   renderApp() {

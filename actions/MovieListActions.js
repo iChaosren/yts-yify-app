@@ -8,16 +8,17 @@ import {
 } from '../constants/Api';
 
 export const fetchMovieList = ({ page, query_term }) =>  {    
-    return (dispatch) => {
+    return async (dispatch) => {
+        if(!query_term)
+            query_term = '';
+
         dispatch({
-            type: FETCHING_MOVIE_LIST
+            type: FETCHING_MOVIE_LIST,
+            payload: query_term
         });
 
         if(!page)
             page = 1;
-        
-        if(!query_term)
-            query_term = '';
 
         axios.get(base_url + list_movies, {
             params: {
@@ -26,6 +27,7 @@ export const fetchMovieList = ({ page, query_term }) =>  {
             }
           })
           .then(function (response) {
+              console.log('received response')
             dispatch({
                 type: FETCH_SUCCESS_MOVIE_LIST,
                 payload: response.data

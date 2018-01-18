@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "yts-yify-app",
-    "description": "This project is really great.",
+    "name": "YTS.AG YIFY",
+    "description": "Search and Save Favourite Movies",
     "slug": "yts-yify-app",
     "privacy": "public",
     "sdkVersion": "24.0.0",
