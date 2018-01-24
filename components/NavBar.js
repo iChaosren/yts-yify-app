@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Platform, Text } from 'react-native';
+import { StyleSheet, Platform, Text, View } from 'react-native';
 import { LinearGradient } from 'expo';
 import { tintColor } from "../constants/Colors";
 
@@ -13,6 +13,12 @@ export default class NavBar extends Component {
             end={{ x: 0.0, y: 1.0 }}
             style={styles.container}
         >
+
+        <View style={styles.left}>
+            {this.props.left}
+        </View>
+
+        <View style={styles.center}>
             <Text style={{
                 backgroundColor: 'transparent',
                 color: '#6ac045',
@@ -23,9 +29,20 @@ export default class NavBar extends Component {
                 fontFamily: 'Open Sans Light',
                 lineHeight: 23
             }}>{this.props.title}</Text>
+        </View>
+
+        <View style={styles.right}>
+            {this.props.right}
+        </View>
+
         </LinearGradient>);
     }
 }
+
+<Text style={{
+                backgroundColor: 'transparent',
+                color: '#6ac045',
+            }}>right</Text>
 
 const styles = StyleSheet.create({
     container: {
@@ -41,7 +58,7 @@ const styles = StyleSheet.create({
                 shadowRadius: 3,
                 height: 64,
                 paddingTop: 28,
-                paddingBottom: 22
+                paddingBottom: 14
             },
             android: {
                 elevation: 20,
@@ -50,6 +67,22 @@ const styles = StyleSheet.create({
                 paddingBottom: 12
             },
         }),
-        alignItems: 'center',        
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'center',
+    },
+    left: {
+        paddingLeft: 10,
+        flex: 1,
+        alignItems: 'flex-start',
+    },
+    center: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    right: {
+        paddingRight: 10,
+        alignItems: 'flex-end',
+        flex: 1
     }
 });

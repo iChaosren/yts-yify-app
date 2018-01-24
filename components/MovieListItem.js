@@ -66,7 +66,7 @@ const styles = {
         borderRadius: 4
     },
     movieImageStyle: {
-        width: (Dimensions.get('window').width / 2) - 16,
+        flex: 1,
         height: (Dimensions.get('window').height / 2) - 76,
     },
     movieImageWrapperStyle: {

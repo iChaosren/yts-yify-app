@@ -1,11 +1,12 @@
 import React from 'react';
 import { Text, StyleSheet, Platform } from 'react-native';
-import { Scene, Router, TabBar, Modal, Schema, Actions, Reducer, BottomTabBar } from 'react-native-router-flux'
+import { Scene, Stack, Router, TabBar, Modal, Schema, Actions, Reducer, BottomTabBar, Lightbox } from 'react-native-router-flux'
 
-import MovieList from './components/MovieList';
+import MovieList, { MovieListLeftHeader, MovieListRightHeader } from './components/MovieList';
 
 import Error from './components/Error';
 import NavBar from './components/NavBar';
+import FilterModal from './components/FilterModal';
 
 const reducerCreate = params => {
     const defaultReducer = Reducer(params);
@@ -18,14 +19,12 @@ const reducerCreate = params => {
 const RouterComponent = () => {
     return (
         <Router navBar={NavBar} createReducer={reducerCreate} sceneStyle={{ backgroundColor: '#1d1d1d' }}>
-            <Scene key="modal" component={Modal} >
-                <Scene key="root" hideNavBar>
-                    <Scene key="movies">
-                        <Scene key="movieList" component={MovieList} title="Movies" initial />
-                    </Scene>                    
-                </Scene>
+            <Lightbox key="lightbox">
+                <Stack key="root">
+                    <Scene key="movieList" component={MovieList} title="Movies" left={<MovieListLeftHeader />} right={<MovieListRightHeader />} initial />           
+                </Stack>
                 <Scene key="error" component={Error} />
-            </Scene>
+            </Lightbox>
         </Router>
     );
 };

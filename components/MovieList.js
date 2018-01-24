@@ -1,14 +1,54 @@
 import React, { Component } from 'react';
-import { View, Text, ScrollView, Platform, ActivityIndicator, Dimensions, FlatList } from 'react-native';
+import { View, Text, ScrollView, Platform, ActivityIndicator, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { SearchBar } from 'react-native-elements';
 import { AdMobBanner } from 'expo';
+import { Actions } from 'react-native-router-flux';
 
 import { FontAwesomeLight } from './FontAwesome5';
 
 import { fetchMovieList } from '../actions/MovieListActions';
 
 import MovieListItem from './MovieListItem';
+
+
+class Left extends Component {
+    render() {
+        return (
+            <TouchableOpacity>
+                <FontAwesomeLight name="beer" size={18} color="#6ac045" style={{
+                    backgroundColor: 'transparent',
+                    padding: 10,
+                    textShadowColor: '#000',
+                    textShadowOffset: { height: 1, width: 1 },
+                    textShadowRadius: 2
+                }} />
+            </TouchableOpacity>
+        );
+    }
+}
+
+export const MovieListLeftHeader = connect(null, {})(Left);
+
+class Right extends Component {
+    render() {
+        return (
+            <TouchableOpacity onPress={() => {
+                Actions.filterModal();
+            }}>
+                <FontAwesomeLight name="filter" size={18} color="#6ac045" style={{
+                    backgroundColor: 'transparent',
+                    padding: 10,
+                    textShadowColor: '#000',
+                    textShadowOffset: { height: 1, width: 1 },
+                    textShadowRadius: 2
+                }} />
+            </TouchableOpacity>
+        );
+    }
+}
+
+export const MovieListRightHeader = connect(null, {})(Right);
 
 class MovieList extends Component {
 
@@ -44,8 +84,6 @@ class MovieList extends Component {
     }
 
     render() {
-
-        console.log(this.state)
         return (
             <View style={{ flex: 1 }}>
                 <SearchBar
@@ -79,8 +117,6 @@ class MovieList extends Component {
                             this.props.loading = true;
                             this.props.fetchMovieList({ page: this.props.page + 1, query_term: this.props.query_term });
                         }
-
-                        console.log('Triggered...')
                     }}
                     onEndReachedThreshold={0.5}
                     ListEmptyComponent={() => {
@@ -94,20 +130,21 @@ class MovieList extends Component {
                         else
                             return <View />
                     }}
-                    ListFooterComponent={
-                        <View style={styles.adBanner}>
-                            <AdMobBanner
-                                bannerSize="smartBannerLandscape"
-                                adUnitID={Platform.select({ ios: 'ca-app-pub-3964494109532932/9046758779', android: 'ca-app-pub-3964494109532932/5421185019' })}
-                                didFailToReceiveAdWithError={this.bannerError} />
-                        </View>
-                    }
                 />
                 {this.renderModal()}
             </View>
         );
     }
 }
+
+/* Find non-invasive location to put ad.
+<View style={styles.adBanner}>
+                    <AdMobBanner
+                        bannerSize="smartBannerLandscape"
+                        adUnitID={Platform.select({ ios: 'ca-app-pub-3964494109532932/9046758779', android: 'ca-app-pub-3964494109532932/5421185019' })}
+                        didFailToReceiveAdWithError={this.bannerError} />
+                </View>
+*/
 
 const styles = {
     searchBarContainer: {
@@ -181,7 +218,8 @@ const styles = {
         color: 'rgba(200,35,51,0.8)'
     },
     adBanner: {
-        width: Dimensions.get('window').width
+        width: Dimensions.get('window').width,
+        marginTop: 4
     }
 };
 
