@@ -15,7 +15,9 @@ import MovieListItem from './MovieListItem';
 class Left extends Component {
     render() {
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+                Actions.movieDetail();
+            }}>
                 <FontAwesomeLight name="beer" size={18} color="#6ac045" style={{
                     backgroundColor: 'transparent',
                     padding: 10,
@@ -111,6 +113,7 @@ class MovieList extends Component {
                         year={item.year}
                         rating={item.rating}
                         large_cover_image={item.large_cover_image}
+                        onPress={() => Actions.movieDetail({ movie_id: item.id, title: item.title })}
                     />}
                     onEndReached={() => {
                         if (!this.props.loading && this.props.movieList.length < this.props.movie_count) {

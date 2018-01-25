@@ -9,11 +9,12 @@ class MovieListItem extends PureComponent {
             title,
             year,
             rating,
-            large_cover_image
+            large_cover_image,
+            onPress
         } = this.props;
         
         return (
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onPress}>
                 <Card                 
                     imageProps={{ resizeMode: 'cover', resizeMethod: 'scale' }}
                     imageStyle={{...styles.movieImageStyle}}

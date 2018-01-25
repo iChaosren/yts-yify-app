@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { StyleSheet, Platform, Text, View } from 'react-native';
 import { LinearGradient } from 'expo';
+import { connect } from 'react-redux';
 import { tintColor } from "../constants/Colors";
 
-export default class NavBar extends Component {
-    render() {
+class NavBar extends Component {
+    render() {        
         //'#8e95cc', '#afa1c6', '#dbb1c3'
         return (<LinearGradient
             colors={['#1d1d1d','#171717','#0d0d0d']}
@@ -27,8 +28,10 @@ export default class NavBar extends Component {
                 textShadowRadius: 2,
                 fontSize: 18,                
                 fontFamily: 'Open Sans Light',
-                lineHeight: 23
-            }}>{this.props.title}</Text>
+                lineHeight: 23,
+            }} 
+            numberOfLines={1} 
+            ellipsizeMode='tail'>{this.props.title}</Text>
         </View>
 
         <View style={styles.right}>
@@ -39,10 +42,10 @@ export default class NavBar extends Component {
     }
 }
 
-<Text style={{
+/*<Text style={{
                 backgroundColor: 'transparent',
                 color: '#6ac045',
-            }}>right</Text>
+            }}>right</Text>*/
 
 const styles = StyleSheet.create({
     container: {
@@ -86,3 +89,5 @@ const styles = StyleSheet.create({
         flex: 1
     }
 });
+
+export default connect(null, {})(NavBar);
