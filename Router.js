@@ -8,20 +8,21 @@ import MovieList, { MovieListLeftHeader, MovieListRightHeader } from './componen
 import Error from './components/Error';
 import NavBar from './components/NavBar';
 import FilterModal from './components/FilterModal';
-import MovieDetail from './components/MovieDetail';
+import MovieDetail, { DownloadMovieRightHeader } from './components/MovieDetail';
 import HeaderBack from './components/HeaderBack';
+import ImageModal from './components/ImageModal';
 
 const RouterComponent = () => {
-    console.log(this.props);
     return (
         <Router navBar={NavBar} sceneStyle={{ backgroundColor: '#1d1d1d' }}>
             <Lightbox key="lightbox">
                 <Stack key="root">
                     <Scene key="movieList" component={MovieList} title="Movies" left={<MovieListLeftHeader />} right={<MovieListRightHeader />} initial />
-                    <Scene key="movieDetail" component={MovieDetail} left={<HeaderBack />} />           
+                    <Scene key="movieDetail" component={MovieDetail} left={<HeaderBack />} right={<DownloadMovieRightHeader />} />           
                 </Stack>
                 <Scene key="error" component={Error} />
                 <Scene key="filterModal" component={FilterModal} />
+                <Scene key="imageModal" component={ImageModal} />
             </Lightbox>
         </Router>
     );
